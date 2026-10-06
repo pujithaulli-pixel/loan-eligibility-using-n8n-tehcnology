@@ -1,0 +1,204 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Loan eligibility",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "First name"
+            },
+            {
+              "fieldLabel": "monthly salary",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "email id",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "phone number",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -336,
+        16
+      ],
+      "id": "1d4db65e-dbe5-48ee-8b77-063d47507b3a",
+      "name": "On form submission",
+      "webhookId": "43aac69d-50bd-42ee-bf73-e4eee740d06e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54f46263-95b1-4d5a-96d2-138793480a7e",
+              "name": "indian phone number",
+              "value": "=+91{{ $json['phone number'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "51cb4a49-c4c2-45d3-ba56-692db423c613",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1166c668-0d0a-4dc2-b84d-9d9e9fd0db7b",
+              "leftValue": "={{ $('On form submission').item.json['monthly salary'] }}",
+              "rightValue": 50000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        16
+      ],
+      "id": "89db40a1-1815-4ab1-afa9-6723700b3085",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['email id'] }}",
+        "subject": "=Hello ",
+        "message": "=Hello {{ $('On form submission').item.json['First name'] }} Congratulations u are eligible! As ur monthly slary is {{ $('On form submission').item.json['monthly salary'] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -176
+      ],
+      "id": "49da9ea8-c3aa-4a64-8d60-f1b03bd54a28",
+      "name": "Send a message",
+      "webhookId": "bb32693d-7358-4ed7-88e3-247b7699c04d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JvXstM3er7H11u9e",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['email id'] }}",
+        "subject": "=Hello ",
+        "message": "=Hello {{ $('On form submission').item.json['First name'] }}  u are not eligible! As ur monthly slary is {{ $('On form submission').item.json['monthly salary'] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        112
+      ],
+      "id": "ed72fc60-8984-49cb-a52b-08314d277608",
+      "name": "Send a message1",
+      "webhookId": "bb32693d-7358-4ed7-88e3-247b7699c04d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JvXstM3er7H11u9e",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ad79c178-e9dd-421f-8705-e7da9d93888a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4e77d3ac09e71993184bef279e8094b9e10a70cfb70e0e2c201c112ceb82f0a1"
+  },
+  "nodeGroups": [],
+  "id": "DbMyb8wdIKwJvGmp",
+  "tags": []
+}
